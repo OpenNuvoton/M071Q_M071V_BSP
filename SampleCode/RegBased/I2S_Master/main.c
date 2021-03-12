@@ -156,9 +156,11 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set GPD multi-function pins for UART0 RXD and TXD */
-    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD0MFP_Msk | SYS_GPD_MFPL_PD1MFP_Msk);
-    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD0MFP_UART0_RXD | SYS_GPD_MFPL_PD1MFP_UART0_TXD);
+    /* Set PD multi-function pins for UART0 RXD and TXD */
+    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
+    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
+    SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
+    SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 
     /* Configure SPI1 related multi-function pins. */
     /* GPA[7:4] : SPI1_CLK (I2S1_BCLK), SPI1_MISO (I2S1_DI), SPI1_MOSI (I2S1_DO), SPI1_SS (I2S1_LRCLK). */

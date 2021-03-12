@@ -63,9 +63,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Set PD multi-function pins for UART0 RXD(PD.0) and TXD(PD.1) */
-    SYS->GPD_MFPL = (SYS->GPD_MFPL & (~SYS_GPD_MFPL_PD0MFP_Msk)) | SYS_GPD_MFPL_PD0MFP_UART0_RXD;
-    SYS->GPD_MFPL = (SYS->GPD_MFPL & (~SYS_GPD_MFPL_PD1MFP_Msk)) | SYS_GPD_MFPL_PD1MFP_UART0_TXD;
+    /* Set PD multi-function pins for UART0 RXD and TXD */
+    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
+    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
+    SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
+    SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 
     /* Set PC multi-function pins for USCI0_DAT0(PC.0), USCI0_DAT1(PC.1) and USCI0_CTL0(PC.3) */
     SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC0MFP_Msk)) | SYS_GPC_MFPL_PC0MFP_USCI0_DAT0;

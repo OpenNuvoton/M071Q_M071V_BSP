@@ -61,8 +61,10 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PD multi-function pins for UART0 RXD, TXD */
-    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD0MFP_Msk | SYS_GPD_MFPL_PD1MFP_Msk);
-    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD0MFP_UART0_RXD | SYS_GPD_MFPL_PD1MFP_UART0_TXD);
+    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
+    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
+    SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
+    SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 
     /* Set Timer0 PWM CH0(TM0) and CH1(TM0_EXT) pins */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD4MFP_Msk | SYS_GPD_MFPL_PD2MFP_Msk);
