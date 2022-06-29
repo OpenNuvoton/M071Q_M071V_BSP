@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
-#define PLLCTL_SETTING      CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK           72000000
 
 #define APROM_TEST_BASE             0x3000

@@ -22,7 +22,7 @@
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 extern char GetChar(void);
-//int32_t main(void);
+int32_t main(void);
 void AutoBaudRate_TestItem(void);
 void AutoBaudRate_TxTest(void);
 
@@ -118,7 +118,7 @@ void UART1_Init()
 /* MAIN function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 
-int main(void)
+int32_t main(void)
 {
 
     /* Unlock protected registers */

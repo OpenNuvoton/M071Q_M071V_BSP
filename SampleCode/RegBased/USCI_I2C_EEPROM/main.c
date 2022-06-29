@@ -208,9 +208,12 @@ void SYS_Init(void)
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
     SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 
-    /* Set PC multi-function pins for UI2C0_SDA(P2.5) and UI2C0_SDA(P2.4) */
+    /* Set PC multi-function pins for UI2C0_SDA(PC.5) and UI2C0_SDA(PC.4) */
     SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC5MFP_Msk | SYS_GPC_MFPL_PC4MFP_Msk);
     SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC5MFP_USCI0_DAT0 | SYS_GPC_MFPL_PC4MFP_USCI0_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk);
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)
@@ -264,7 +267,7 @@ void UART_Init(void)
 
 int main()
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -312,7 +315,15 @@ int main()
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Tx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Tx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to read data from slave */
@@ -325,7 +336,15 @@ int main()
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Rx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Rx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* Compare data */

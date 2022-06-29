@@ -227,6 +227,9 @@ void SYS_Init(void)
     /* Set PC multi-function pins for UI2C0_SDA(PC.5) and UI2C0_SDA(PC.4) */
     SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC5MFP_Msk | SYS_GPC_MFPL_PC4MFP_Msk);
     SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC5MFP_USCI0_DAT0 | SYS_GPC_MFPL_PC4MFP_USCI0_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk);
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)
@@ -254,11 +257,11 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
     UI2C0->BRGEN |= (u32Clkdiv << UI2C_BRGEN_CLKDIV_Pos);
 
 
-    /* Set UI2C1 Slave Addresses */
+    /* Set UI2C0 Slave Addresses */
     UI2C0->DEVADDR0 = 0x15;   /* Slave Address : 0x15 */
     UI2C0->DEVADDR1 = 0x35;   /* Slave Address : 0x35 */
 
-    /* Set UI2C1 Slave Addresses Msk */
+    /* Set UI2C0 Slave Addresses Msk */
     UI2C0->ADDRMSK0 = 0x1;   /* Slave Address : 0x1 */
     UI2C0->ADDRMSK1 = 0x4;   /* Slave Address : 0x4 */
 
@@ -280,7 +283,7 @@ void UART_Init(void)
 
 int32_t Read_Write_SLAVE(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -301,7 +304,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Tx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Tx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to read data from slave */
@@ -314,7 +325,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Rx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Rx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* Compare data */

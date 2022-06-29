@@ -11,7 +11,6 @@
 #include "M071Q_M071V.h"
 
 
-#define PLLCTL_SETTING  CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK       72000000
 
 
@@ -20,8 +19,12 @@
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(UART0);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    UART_WAIT_TX_EMPTY(UART0)
+        if(--u32TimeOutCnt == 0) break;
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -34,7 +37,7 @@ void PowerDownFunction(void)
  *
  * @return      None
  *
- * @details     The PortA/PortB default IRQ, declared in startup_NUC126.s.
+ * @details     The PortA/PortB default IRQ, declared in startup_M071Q_M071V.s.
  */
 void GPAB_IRQHandler(void)
 {

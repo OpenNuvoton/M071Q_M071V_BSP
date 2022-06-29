@@ -11,7 +11,7 @@
 #include "M071Q_M071V.h"
 
 
-#define PLLCON_SETTING  CLK_PLLCTL_72MHz_HXT
+#define PLLCTL_SETTING  CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK       72000000
 
 
@@ -28,7 +28,7 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
  *
  * @return      None
  *
- * @details     The Timer0 default IRQ, declared in startup_NUC126.s.
+ * @details     The Timer0 default IRQ, declared in startup_M071Q_M071V.s.
  */
 void TMR0_IRQHandler(void)
 {
@@ -48,7 +48,7 @@ void TMR0_IRQHandler(void)
  *
  * @return      None
  *
- * @details     The Timer1 default IRQ, declared in startup_NUC126.s.
+ * @details     The Timer1 default IRQ, declared in startup_M071Q_M071V.s.
  */
 void TMR1_IRQHandler(void)
 {
@@ -68,7 +68,7 @@ void TMR1_IRQHandler(void)
  *
  * @return      None
  *
- * @details     The Timer2 default IRQ, declared in startup_NUC126.s.
+ * @details     The Timer2 default IRQ, declared in startup_M071Q_M071V.s.
  */
 void TMR2_IRQHandler(void)
 {
@@ -122,7 +122,7 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk;
 
     /* Enable PLL and Set PLL frequency */
-    CLK->PLLCTL = PLLCON_SETTING;
+    CLK->PLLCTL = PLLCTL_SETTING;
 
     /* Waiting for clock ready */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk));
@@ -147,7 +147,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PD multi-function pins for UART0 RXD, TXD */
+    /* Set PD multi-function pins for UART0 RXD and TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
@@ -265,7 +265,7 @@ int main(void)
                     (g_au32TMRINTCount[3] > (g_au32TMRINTCount[0] * 8 + 1)) || (g_au32TMRINTCount[3] < (g_au32TMRINTCount[0] * 8 - 1)))
             {
                 printf("*** FAIL ***\n");
-                while(1);
+                return -1;
             }
         }
     }

@@ -235,7 +235,6 @@ void UI2C_LB_SlaveTRx(uint32_t u32Status)
             else
             {
                 printf("No Address Match!!!\n");
-                while(1);
             }
 
             if((UI2C1->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
@@ -345,6 +344,10 @@ void SYS_Init(void)
     /* Set PD multi-function pins for UI2C1_SDA(PD.14) and UI2C1_SDA(PD.15) */
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD14MFP_Msk | SYS_GPD_MFPH_PD15MFP_Msk);
     SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD14MFP_USCI1_DAT0 | SYS_GPD_MFPH_PD15MFP_USCI1_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk);
+    PD->SMTEN |= (GPIO_SMTEN_SMTEN14_Msk | GPIO_SMTEN_SMTEN15_Msk);
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)
@@ -372,11 +375,11 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
     UI2C0->BRGEN |= (u32Clkdiv << UI2C_BRGEN_CLKDIV_Pos);
 
 
-    /* Set UI2C1 Slave Addresses */
+    /* Set UI2C0 Slave Addresses */
     UI2C0->DEVADDR0 = 0x15;   /* Slave Address : 0x15 */
     UI2C0->DEVADDR1 = 0x35;   /* Slave Address : 0x35 */
 
-    /* Set UI2C1 Slave Addresses Msk */
+    /* Set UI2C0 Slave Addresses Msk */
     UI2C0->ADDRMSK0 = 0x1;   /* Slave Address : 0x1 */
     UI2C0->ADDRMSK1 = 0x4;   /* Slave Address : 0x4 */
 
@@ -438,7 +441,7 @@ void UART_Init(void)
 
 int32_t Read_Write_SLAVE(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -459,7 +462,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Tx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Tx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to read data from slave */
@@ -473,7 +484,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Rx Finish */
-        while(g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C Rx finish time-out!\n");
+                return -1;
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* Compare data */

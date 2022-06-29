@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
-#define PLLCTL_SETTING  CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK       72000000
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -69,6 +68,9 @@ void SYS_Init(void)
     /* Set PA multi-function pins for I2C0 SDA and SCL */
     SYS->GPA_MFPL &= ~(SYS_GPA_MFPL_PA2MFP_Msk | SYS_GPA_MFPL_PA3MFP_Msk);
     SYS->GPA_MFPL |= (SYS_GPA_MFPL_PA2MFP_I2C0_SDA | SYS_GPA_MFPL_PA3MFP_I2C0_SCL);
+
+    /* I2C pins enable schmitt trigger */
+    PA->SMTEN |= (GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk);
 }
 
 void UART0_Init()
@@ -120,8 +122,8 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
-    uint8_t u8data, u8tmp, err; 
+    uint32_t i, u32TimeOutCnt;
+    uint8_t u8data, u8tmp, err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -156,16 +158,26 @@ int32_t main(void)
     I2C0_Init();
 
     /* Slave Address */
-    g_u8DeviceAddr = 0x15; 
+    g_u8DeviceAddr = 0x15;
 
     err = 0;
-       
+
     for(i = 0; i<256; i++)
     {
-        u8tmp = (uint8_t)i+3; 
-        
-        /* Single Byte Write (Two Registers) */         
-        while(I2C_WriteByteTwoRegs(I2C0, g_u8DeviceAddr, i, u8tmp));
+        u8tmp = (uint8_t)i+3;
+
+        /* Single Byte Write (Two Registers) */
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(I2C_WriteByteTwoRegs(I2C0, g_u8DeviceAddr, i, u8tmp))
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                err = 1;
+                printf("Wait for I2C Tx time-out!\n");
+                break;
+            }
+        }
+        if(u32TimeOutCnt == 0) break;
 
         /* Single Byte Read (Two Registers) */
         u8data = I2C_ReadByteTwoRegs(I2C0, g_u8DeviceAddr, i);
@@ -174,7 +186,7 @@ int32_t main(void)
             err = 1;
             printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", i, u8tmp, u8data);
         }
-    } 
+    }
 
     printf("\n");
 

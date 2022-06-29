@@ -102,7 +102,7 @@ void SYS_Init(void)
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
     SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 
-    /* Set PD multi-function pin for EINT0(PD.2) and EINT1(PD.3)*/
+    /* Set PD multi-function pin for EINT0(PD.2) and EINT1(PD.3) */
     SYS->GPD_MFPL = (SYS->GPD_MFPL & (~SYS_GPD_MFPL_PD2MFP_Msk)) | SYS_GPD_MFPL_PD2MFP_INT0;
     SYS->GPD_MFPL = (SYS->GPD_MFPL & (~SYS_GPD_MFPL_PD3MFP_Msk)) | SYS_GPD_MFPL_PD3MFP_INT1;
 }

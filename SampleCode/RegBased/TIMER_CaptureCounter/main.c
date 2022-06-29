@@ -11,7 +11,7 @@
 #include "M071Q_M071V.h"
 
 
-#define PLLCON_SETTING  CLK_PLLCTL_72MHz_HXT
+#define PLLCTL_SETTING  CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK       72000000
 
 
@@ -28,7 +28,7 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
   *
   * @return     None
   *
-  * @details    The Timer2 default IRQ, declared in startup_NUC126.s.
+  * @details    The Timer2 default IRQ, declared in startup_M071Q_M071V.s.
   */
 void TMR2_IRQHandler(void)
 {
@@ -62,7 +62,7 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk | CLK_PWRCTL_LIRCEN_Msk;
 
     /* Enable PLL and Set PLL frequency */
-    CLK->PLLCTL = PLLCON_SETTING;
+    CLK->PLLCTL = PLLCTL_SETTING;
 
     /* Waiting for clock ready */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk));
@@ -87,7 +87,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PD multi-function pins for UART0 RXD, TXD */
+    /* Set PD multi-function pins for UART0 RXD and TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
@@ -127,6 +127,7 @@ int main(void)
 {
     volatile uint32_t u32InitCount;
     uint32_t au32CAPValue[10], u32CAPDiff;
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -167,7 +168,7 @@ int main(void)
     /* Enable Timer2 NVIC */
     NVIC_EnableIRQ(TMR2_IRQn);
 
-    /* Start Timer0 counting and output T0 frequency to 500 Hz*/
+    /* Start Timer0 counting and output T0 frequency to 500 Hz */
     TIMER0->CMP = (__HXT / 1000);
     TIMER0->CTL = TIMER_CTL_CNTEN_Msk | TIMER_TOGGLE_MODE;
 
@@ -198,7 +199,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             else if(u32InitCount ==  1)
@@ -207,7 +208,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 500)   // Second event gets two capture event duration counts directly
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             else
@@ -217,7 +218,7 @@ int main(void)
                 if(u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             u32InitCount = g_au32TMRINTCount[2];
@@ -228,11 +229,13 @@ int main(void)
     /* case 2. */
     TIMER_StopCapture(TIMER2);
     TIMER_Stop(TIMER2);
-    while(TIMER_IS_ACTIVE(TIMER2));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(TIMER_IS_ACTIVE(TIMER2))
+        if(--u32TimeOutCnt == 0) break;
     TIMER_ClearIntFlag(TIMER2);
     TIMER_ClearCaptureIntFlag(TIMER2);
 
-    printf("# Get first low duration shoulb be 250 counts.\n");
+    printf("# Get first low duration should be 250 counts.\n");
     printf("# And follows duration between two rising edge captured event should be 500 counts.\n");
 
     /* Clear Timer2 interrupt counts to 0 */
@@ -255,7 +258,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             else if(u32InitCount ==  1)
@@ -264,7 +267,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 250)   // Get low duration counts directly
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             else
@@ -274,7 +277,7 @@ int main(void)
                 if(u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    while(1);
+                    return -1;
                 }
             }
             u32InitCount = g_au32TMRINTCount[2];

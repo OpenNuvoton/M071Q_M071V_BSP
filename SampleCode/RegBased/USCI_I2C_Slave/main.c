@@ -42,7 +42,7 @@ void USCI_IRQHandler(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  USCI_I2C1 TRx Callback Function                                                                        */
+/*  USCI_I2C0 TRx Callback Function                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 void UI2C_LB_SlaveTRx(uint32_t u32Status)
 {
@@ -79,7 +79,6 @@ void UI2C_LB_SlaveTRx(uint32_t u32Status)
             else
             {
                 printf("No Address Match!!!\n");
-                while(1);
             }
 
             if((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
@@ -185,6 +184,9 @@ void SYS_Init(void)
     /* Set PC multi-function pins for UI2C0_SDA(PC.5) and UI2C0_SDA(PC.4) */
     SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC5MFP_Msk | SYS_GPC_MFPL_PC4MFP_Msk);
     SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC5MFP_USCI0_DAT0 | SYS_GPC_MFPL_PC4MFP_USCI0_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk);
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)

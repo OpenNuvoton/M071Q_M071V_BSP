@@ -215,7 +215,7 @@ uint32_t volatile u32IsTestOver = 0;
  *
  * @return      None
  *
- * @details     The DMA default IRQ, declared in startup_nuc400series.s.
+ * @details     The DMA default IRQ, declared in startup_M071Q_M071V.s.
  */
 void PDMA_IRQHandler(void)
 {

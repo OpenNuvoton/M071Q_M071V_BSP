@@ -49,7 +49,7 @@ int main(void)
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("|             SPI Master Mode Sample Code (M05xxDN/DE only)            |\n");
+    printf("|                      SPI Master Mode Sample Code                     |\n");
     printf("+----------------------------------------------------------------------+\n");
     printf("\n");
     printf("Configure SPI0 as a master.\n");
@@ -180,7 +180,7 @@ void SPI0_IRQHandler(void)
         SPI0->FIFOCTL &= (~SPI_FIFOCTL_TXTHIEN_Msk); /* Disable TX FIFO threshold interrupt */
 
     /* Check the RX FIFO time-out interrupt flag */
-    if(SPI0->STATUS & SPI_FIFOCTL_RXTOIEN_Msk)
+    if(SPI0->STATUS & SPI_STATUS_RXTOIF_Msk)
     {
         /* If RX FIFO is not empty, read RX FIFO. */
         while((SPI0->STATUS & SPI_STATUS_RXEMPTY_Msk) == 0)

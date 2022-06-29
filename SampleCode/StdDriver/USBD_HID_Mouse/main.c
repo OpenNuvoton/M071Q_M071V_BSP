@@ -99,8 +99,8 @@ void SYS_Init(void)
     SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD5MFP_CLKO);
     SYS->GPD_MFPL |= SYS_GPD_MFPL_PD5MFP_CLKO;
-    
-    /* Enable CLKO(PD5) for monitor clock. CLKO = clock src/64 Hz 
+
+    /* Enable CLKO(PD5) for monitor clock. CLKO = clock src/64 Hz
         000 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT) clock.
         001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT) clock.
         010 = Clock source from HCLK.
@@ -108,7 +108,7 @@ void SYS_Init(void)
         100 = Clock source from SOF (USB start of frame event).
         101 = Clock source from 48 MHz internal high speed RC oscillator (HIRC48) clock.
     */
-    
+
     EnableCLKO((5 << CLK_CLKSEL2_CLKOSEL_Pos), 5);
 
 }
@@ -129,11 +129,15 @@ void UART0_Init(void)
 
 void PowerDown()
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
     printf("Enter power down ...\n");
-    while(!IsDebugFifoEmpty());
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!IsDebugFifoEmpty())
+        if(--u32TimeOutCnt == 0) break;
 
     /* Wakeup Enable */
     USBD_ENABLE_INT(USBD_INTEN_WKEN_Msk);

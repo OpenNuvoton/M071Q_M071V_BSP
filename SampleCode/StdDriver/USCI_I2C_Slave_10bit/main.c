@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
-#define PLLCTL_SETTING  CLK_PLLCTL_72MHz_HXT
 #define PLL_CLOCK       72000000
 
 #define SLV_10BIT_ADDR (0x1E<<2)             //1111+0xx+r/w
@@ -44,7 +43,7 @@ void USCI_IRQHandler(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  UI2C0 TRx Callback Function                                                                        */
+/*  UI2C0 TRx Callback Function                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
 void UI2C_LB_SlaveTRx(uint32_t u32Status)
 {
@@ -189,6 +188,9 @@ void SYS_Init(void)
     /* Set PC multi-function pins for UI2C0_SDA(PC.5) and UI2C0_SDA(PC.4) */
     SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC5MFP_Msk | SYS_GPC_MFPL_PC4MFP_Msk);
     SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC5MFP_USCI0_DAT0 | SYS_GPC_MFPL_PC4MFP_USCI0_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= (GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk);
 }
 
 void UI2C0_Init(uint32_t u32ClkSpeed)

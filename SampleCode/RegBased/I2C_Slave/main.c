@@ -56,7 +56,7 @@ void I2C0_IRQHandler(void)
 void I2C_SlaveTRx(uint32_t u32Status)
 {
     uint8_t u8data;
-    
+
     if(u32Status == 0x60)                       /* Own SLA+W has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
@@ -65,19 +65,19 @@ void I2C_SlaveTRx(uint32_t u32Status)
     else if(u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
-        u8data = (unsigned char) I2C_GET_DATA(I2C0);   
-        if(g_u8SlvDataLen < 2)        
+        u8data = (unsigned char) I2C_GET_DATA(I2C0);
+        if(g_u8SlvDataLen < 2)
         {
-            g_au8SlvRxData[g_u8SlvDataLen++] = u8data;        
+            g_au8SlvRxData[g_u8SlvDataLen++] = u8data;
             slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
-        else 
+        else
         {
             g_au8SlvData[slave_buff_addr++] = u8data;
             if(slave_buff_addr==256)
-        {
+            {
                 slave_buff_addr = 0;
-            }            
+            }
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
@@ -93,7 +93,7 @@ void I2C_SlaveTRx(uint32_t u32Status)
     {
         I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    }  
+    }
     else if(u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
     {
@@ -130,7 +130,7 @@ void SYS_Init(void)
     /* Waiting for HIRC clock ready */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
 
-    /* Select HCLK clock source as HIRC and and HCLK clock divider as 1 */
+    /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 &= ~CLK_CLKSEL0_HCLKSEL_Msk;
     CLK->CLKSEL0 |= CLK_CLKSEL0_HCLKSEL_HIRC;
     CLK->CLKDIV0 &= ~CLK_CLKDIV0_HCLKDIV_Msk;
@@ -159,7 +159,7 @@ void SYS_Init(void)
     /* Enable UART module clock and I2C controller */
     CLK->APBCLK0 |= (CLK_APBCLK0_UART0CKEN_Msk | CLK_APBCLK0_I2C0CKEN_Msk);
 
-    /* Select UART module clock source as HXT and UART module clock divider as 1 */
+    /* Select UART module clock source as HXT */
     CLK->CLKSEL1 &= ~CLK_CLKSEL1_UARTSEL_Msk;
     CLK->CLKSEL1 |= CLK_CLKSEL1_UARTSEL_HXT;
 
@@ -175,6 +175,9 @@ void SYS_Init(void)
     /* Set PA multi-function pins for I2C0 SDA and SCL */
     SYS->GPA_MFPL &= ~(SYS_GPA_MFPL_PA2MFP_Msk | SYS_GPA_MFPL_PA3MFP_Msk);
     SYS->GPA_MFPL |= (SYS_GPA_MFPL_PA2MFP_I2C0_SDA | SYS_GPA_MFPL_PA3MFP_I2C0_SCL);
+
+    /* I2C pins enable schmitt trigger */
+    PA->SMTEN |= (GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk);
 }
 
 void UART0_Init(void)
@@ -247,7 +250,7 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -268,10 +271,10 @@ int32_t main(void)
     */
 
     printf("+----------------------------------------------------+\n");
-    printf("| I2C Driver Sample Code(Slave) for access Slave        |\n");
+    printf("| I2C Driver Sample Code(Slave) for access Slave     |\n");
     printf("| Needs to work with I2C_Master sample code          |\n");
-    printf("| I2C Master (I2C0) <---> I2C Slave(I2C0)               |\n");
-    printf("| !! This sample code requires two borads to test !! |\n");
+    printf("| I2C Master (I2C0) <---> I2C Slave(I2C0)            |\n");
+    printf("| !! This sample code requires two boards to test !! |\n");
     printf("+----------------------------------------------------+\n");
 
     printf("Configure I2C0 as a slave.\n");

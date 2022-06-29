@@ -48,7 +48,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PD multi-function pins for UART0 RXD, TXD */
+    /* Set PD multi-function pins for UART0 RXD and TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
@@ -118,7 +118,7 @@ uint32_t GetPDMAChecksum(uint32_t u32Address, uint32_t u32Size)
         if(loop++ > (SystemCoreClock / 100))
         {
             printf("\n[PDMA transfer time-out]\n");
-            while(1);
+            return 0;
         }
     }
 
