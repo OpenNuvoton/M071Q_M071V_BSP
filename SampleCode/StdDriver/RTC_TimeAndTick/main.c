@@ -176,7 +176,7 @@ int main(void)
             if(u32Sec == sReadRTC.u32Second)
             {
                 printf("\nRTC tick period time is incorrect.\n");
-                return -1;
+                break;
             }
 
             u32Sec = sReadRTC.u32Second;
@@ -195,6 +195,8 @@ int main(void)
             }
         }
     }
+
+    while(1);
 }
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

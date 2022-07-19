@@ -64,6 +64,8 @@ int32_t SYS_Init(void)
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
     SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
+
+    return 0;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

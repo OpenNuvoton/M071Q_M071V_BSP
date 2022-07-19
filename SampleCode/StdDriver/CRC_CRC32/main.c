@@ -12,6 +12,7 @@
 
 
 #define PLL_CLOCK           72000000
+int32_t g_FMC_i32ErrCode;
 
 
 void SYS_Init(void)

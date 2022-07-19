@@ -221,7 +221,7 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i, u32TimeOutCnt;
+    uint32_t i;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
