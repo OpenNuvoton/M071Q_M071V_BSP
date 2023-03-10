@@ -14,7 +14,7 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>M071QG4AE</Device>
+          <Device>M071VG4AE</Device>
           <Vendor>Nuvoton</Vendor>
           <PackID>Nuvoton.NuMicro_DFP.1.3.9</PackID>
           <PackURL>http://www.nuvoton.com/hq/enu/Documents/KEILSoftwarePack</PackURL>
@@ -485,7 +485,7 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>M071QG4AE</Device>
+          <Device>M071VG4AE</Device>
           <Vendor>Nuvoton</Vendor>
           <PackID>Nuvoton.NuMicro_DFP.1.3.9</PackID>
           <PackURL>http://www.nuvoton.com/hq/enu/Documents/KEILSoftwarePack</PackURL>
