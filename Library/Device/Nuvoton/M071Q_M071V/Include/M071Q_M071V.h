@@ -8,7 +8,7 @@
  * @note
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *
  ******************************************************************************/
 
@@ -28,7 +28,7 @@
   *
   * <b>Copyright Notice</b>
   *
-  * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+  * Copyright (C) 2021~2023 Nuvoton Technology Corp. All rights reserved.
   */
 
 #ifndef __M071Q_M071V_H__
