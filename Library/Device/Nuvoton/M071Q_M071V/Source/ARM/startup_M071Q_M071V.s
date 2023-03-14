@@ -82,7 +82,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     Default_Handler 
                 DCD     Default_Handler
                 DCD     USCI_IRQHandler 
-                DCD     USBD_IRQHandler  
+                DCD     Default_Handler 
                 DCD     SC01_IRQHandler  
                 DCD     ACMP01_IRQHandler 
                 DCD     PDMA_IRQHandler
@@ -160,7 +160,6 @@ Default_Handler PROC
                 EXPORT  I2C0_IRQHandler           [WEAK]
                 EXPORT  I2C1_IRQHandler           [WEAK]
 				EXPORT  USCI_IRQHandler           [WEAK]
-                EXPORT  USBD_IRQHandler           [WEAK]
                 EXPORT  SC01_IRQHandler           [WEAK]
                 EXPORT  ACMP01_IRQHandler         [WEAK]
                 EXPORT  PDMA_IRQHandler           [WEAK]
@@ -188,7 +187,6 @@ SPI1_IRQHandler
 I2C0_IRQHandler
 I2C1_IRQHandler
 USCI_IRQHandler
-USBD_IRQHandler
 SC01_IRQHandler
 ACMP01_IRQHandler
 PDMA_IRQHandler

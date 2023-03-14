@@ -70,7 +70,7 @@ __vector_table
     DCD     Default_Handler             ; Reserved                                        
     DCD     Default_Handler             ; Reserved                                         
     DCD     USCI_IRQHandler             ; USCI interrupt
-    DCD     USBD_IRQHandler             ; USBD interrupt
+    DCD     Default_Handler             ; Reserved
     DCD     SC01_IRCHandler             ; SC0 and SC1 interrupt
     DCD     ACMP01_IRQHandler           ; ACMP0/1 interrupt
     DCD     PDMA_IRQHandler             ; PDMA interrupt
@@ -118,7 +118,6 @@ Reset_Handler
     PUBWEAK I2C0_IRQHandler
     PUBWEAK I2C1_IRQHandler
 	PUBWEAK USCI_IRQHandler
-    PUBWEAK USBD_IRQHandler
 	PUBWEAK SC01_IRCHandler
     PUBWEAK ACMP01_IRQHandler 
     PUBWEAK PDMA_IRQHandler
@@ -153,7 +152,6 @@ SPI1_IRQHandler
 I2C0_IRQHandler
 I2C1_IRQHandler
 USCI_IRQHandler
-USBD_IRQHandler
 SC01_IRCHandler
 ACMP01_IRQHandler
 PDMA_IRQHandler

@@ -87,8 +87,8 @@ __Vectors:
     .long   I2C1_IRQHandler 
     .long   Default_Handler 
     .long   Default_Handler
-    .long   USCI_IRQHandler 
-    .long   USBD_IRQHandler  
+    .long   USCI_IRQHandler
+    .long   Default_Handler 
     .long   SC01_IRQHandler  
     .long   ACMP01_IRQHandler 
     .long   PDMA_IRQHandler
@@ -298,7 +298,6 @@ Default_Handler:
     def_irq_handler I2C0_IRQHandler
     def_irq_handler I2C1_IRQHandler
     def_irq_handler USCI_IRQHandler
-    def_irq_handler USBD_IRQHandler
     def_irq_handler SC01_IRQHandler
     def_irq_handler ACMP01_IRQHandler
     def_irq_handler PDMA_IRQHandler
