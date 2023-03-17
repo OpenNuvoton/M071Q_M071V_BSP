@@ -740,7 +740,7 @@ typedef struct
      * |        |          |Note2: This bit is write protected. Refer to the SYS_REGLCTL register.
      * |[6]     |PDWKIF    |Power-down Mode Wake-up Interrupt Status
      * |        |          |Set by u201CPower-down wake-up eventu201D, it indicates that resume from Power-down modeu201D
-     * |        |          |The flag is set if the EINT0~5, GPIO, USBD, UART0~2, WDT, ACMP01, BOD, EBOD, RTC, TMR0~3, I2C0~1 or USCI0~2 wake-up occurred.
+     * |        |          |The flag is set if the EINT0~5, GPIO, UART0~2, WDT, ACMP01, BOD, EBOD, RTC, TMR0~3, I2C0~1 or USCI0~2 wake-up occurred.
      * |        |          |Note1: Write 1 to clear the bit to 0.
      * |        |          |Note2: This bit works only if PDWKIEN (CLK_PWRCTL[5]) set to 1.
      * |[7]     |PDEN      |System Power-down Enable (Write Protect)
@@ -868,9 +868,6 @@ typedef struct
      * |[21]    |PWM1CKEN  |PWM1 Clock Enable Bit
      * |        |          |0 = PWM1 clock Disabled.
      * |        |          |1 = PWM1 clock Enabled.
-     * |[27]    |USBDCKEN  |USB Device Clock Enable Bit
-     * |        |          |0 = USB Device clock Disabled.
-     * |        |          |1 = USB Device clock Enabled.
      * |[28]    |ADCCKEN   |Analog-digital-converter (ADC) Clock Enable Bit
      * |        |          |0 = ADC clock Disabled.
      * |        |          |1 = ADC clock Enabled.
@@ -1010,11 +1007,6 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[3:0]   |HCLKDIV   |HCLK Clock Divide Number From HCLK Clock Source
      * |        |          |HCLK clock frequency = (HCLK clock source frequency) / (HCLKDIV + 1).
-     * |[7:4]   |USBDIV    |USB Clock Divide Number From PLL Clock
-     * |        |          |USB clock frequency = (PLL clock source frequency) / (USBDIV + 1).
-     * |        |          |Note: If the HIRC48 is selected, it is delivery to USB clock directly.
-     * |[11:8]  |UARTDIV   |UART Clock Divide Number From UART Clock Source
-     * |        |          |UART clock frequency = (UART clock source frequency) / (UARTDIV + 1).
      * |[23:16] |ADCDIV    |ADC Clock Divide Number From ADC Clock Source
      * |        |          |ADC clock frequency = (ADC clock source frequency) / (ADCDIV + 1).
      * @var CLK_T::CLKSEL2
@@ -1027,7 +1019,6 @@ typedef struct
      * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT) clock.
      * |        |          |010 = Clock source from HCLK.
      * |        |          |011 = Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC) clock.
-     * |        |          |100 = Clock source from SOF (USB start of frame event).
      * |        |          |101 = Clock source from 48 MHz internal high speed RC oscillator (HIRC48) clock.
      * |        |          |Others = Reserved.
      * |[17:16] |WWDTSEL   |Window Watchdog Timer Clock Source Selection
@@ -1128,10 +1119,6 @@ typedef struct
      * |        |          |01 = Clock source from PLL clock.
      * |        |          |10 = Clock source from PCLK1.
      * |        |          |11 = Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC) clock.
-     * |[8]     |USBDSEL   |USBD Clock Source Selection (Write Protect)
-     * |        |          |0 = Clock source from 48MHz internal hight speed RC oscillator (HIRC48) clock.
-     * |        |          |1 = Clock source from PLL clock.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
      * @var CLK_T::CLKDIV1
      * Offset: 0x38  Clock Divider Number Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -1361,9 +1348,6 @@ typedef struct
 #define CLK_APBCLK0_PWM1CKEN_Pos         (21)                                              /*!< CLK_T::APBCLK0: PWM1CKEN Position      */
 #define CLK_APBCLK0_PWM1CKEN_Msk         (0x1ul << CLK_APBCLK0_PWM1CKEN_Pos)               /*!< CLK_T::APBCLK0: PWM1CKEN Mask          */
 
-#define CLK_APBCLK0_USBDCKEN_Pos         (27)                                              /*!< CLK_T::APBCLK0: USBDCKEN Position      */
-#define CLK_APBCLK0_USBDCKEN_Msk         (0x1ul << CLK_APBCLK0_USBDCKEN_Pos)               /*!< CLK_T::APBCLK0: USBDCKEN Mask          */
-
 #define CLK_APBCLK0_ADCCKEN_Pos          (28)                                              /*!< CLK_T::APBCLK0: ADCCKEN Position       */
 #define CLK_APBCLK0_ADCCKEN_Msk          (0x1ul << CLK_APBCLK0_ADCCKEN_Pos)                /*!< CLK_T::APBCLK0: ADCCKEN Mask           */
 
@@ -1432,9 +1416,6 @@ typedef struct
 
 #define CLK_CLKDIV0_HCLKDIV_Pos          (0)                                               /*!< CLK_T::CLKDIV0: HCLKDIV Position       */
 #define CLK_CLKDIV0_HCLKDIV_Msk          (0xful << CLK_CLKDIV0_HCLKDIV_Pos)                /*!< CLK_T::CLKDIV0: HCLKDIV Mask           */
-
-#define CLK_CLKDIV0_USBDIV_Pos           (4)                                               /*!< CLK_T::CLKDIV0: USBDIV Position        */
-#define CLK_CLKDIV0_USBDIV_Msk           (0xful << CLK_CLKDIV0_USBDIV_Pos)                 /*!< CLK_T::CLKDIV0: USBDIV Mask            */
 
 #define CLK_CLKDIV0_UARTDIV_Pos          (8)                                               /*!< CLK_T::CLKDIV0: UARTDIV Position       */
 #define CLK_CLKDIV0_UARTDIV_Msk          (0xful << CLK_CLKDIV0_UARTDIV_Pos)                /*!< CLK_T::CLKDIV0: UARTDIV Mask           */
@@ -1513,9 +1494,6 @@ typedef struct
 
 #define CLK_CLKSEL3_SC1SEL_Pos           (2)                                               /*!< CLK_T::CLKSEL3: SC1SEL Position        */
 #define CLK_CLKSEL3_SC1SEL_Msk           (0x3ul << CLK_CLKSEL3_SC1SEL_Pos)                 /*!< CLK_T::CLKSEL3: SC1SEL Mask            */
-
-#define CLK_CLKSEL3_USBDSEL_Pos          (8)                                               /*!< CLK_T::CLKSEL3: USBDSEL Position       */
-#define CLK_CLKSEL3_USBDSEL_Msk          (0x1ul << CLK_CLKSEL3_USBDSEL_Pos)                /*!< CLK_T::CLKSEL3: USBDSEL Mask           */
 
 #define CLK_CLKDIV1_SC0DIV_Pos           (0)                                               /*!< CLK_T::CLKDIV1: SC0DIV Position        */
 #define CLK_CLKDIV1_SC0DIV_Msk           (0xfful << CLK_CLKDIV1_SC0DIV_Pos)                /*!< CLK_T::CLKDIV1: SC0DIV Mask            */
@@ -11131,9 +11109,6 @@ typedef struct
      * |[22]    |ACMP01RST |ACMP01 Controller Reset
      * |        |          |0 = ACMP01 controller normal operation.
      * |        |          |1 = ACMP01 controller reset.
-     * |[27]    |USBDRST   |USB Device Controller Reset
-     * |        |          |0 = USB device controller normal operation.
-     * |        |          |1 = USB device controller reset.
      * |[28]    |ADCRST    |ADC Controller Reset
      * |        |          |0 = ADC controller normal operation.
      * |        |          |1 = ADC controller reset.
@@ -11479,7 +11454,7 @@ typedef struct
      * |        |          |1 = The trim operation is stopped if clock is inaccuracy.
      * |[10]    |REFCKSEL  |Reference Clock Selection
      * |        |          |0 = HIRC trim reference clock is from LXT (32.768 kHz).
-     * |        |          |1 = HIRC trim reference clock is from internal USB synchronous mode.
+     * |        |          |1 = Reserved.
      * @var SYS_T::IRCTIEN
      * Offset: 0x84  HIRC Trim Interrupt Enable Register
      * ---------------------------------------------------------------------------------------------------
@@ -11580,7 +11555,7 @@ typedef struct
      * |        |          |1 = The trim operation is stopped if clock is inaccuracy.
      * |[10]    |REFCKSEL  |Reference Clock Selection
      * |        |          |0 = HIRC trim reference clock is from LXT (32.768 kHz).
-     * |        |          |1 = HIRC trim reference clock is from internal USB synchronous mode.
+     * |        |          |1 = Reserved.
      * @var SYS_T::MODCTL
      * Offset: 0xC0  Modulation Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -11617,11 +11592,6 @@ typedef struct
      * |        |          |0 = System CACHE BIST Disabled.
      * |        |          |1 = System CACHE BIST Enabled.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[4]     |USBBIST   |USB BIST Enable Bit (Write Protect)
-     * |        |          |This bit enables BIST test for USB RAM.
-     * |        |          |0 = System USB BIST Disabled.
-     * |        |          |1 = System USB BIST Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
      * @var SYS_T::SRAM_BISTSTS
      * Offset: 0xD4  System SRAM BIST Test Status Register
      * ---------------------------------------------------------------------------------------------------
@@ -11633,18 +11603,12 @@ typedef struct
      * |[2]     |CRBISTEF  |CACHE SRAM BIST Fail Flag
      * |        |          |0 = System CACHE RAM BIST test pass.
      * |        |          |1 = System CACHE RAM BIST test fail.
-     * |[4]     |USBBEF    |USB SRAM BIST Fail Flag
-     * |        |          |0 = USB SRAM BIST test pass.
-     * |        |          |1 = USB SRAM BIST test fail.
      * |[16]    |SRBEND    |SRAM BIST Test Finish
      * |        |          |0 = System SRAM BIST active.
      * |        |          |1 = System SRAM BIST finish.
      * |[18]    |CRBEND    |CACHE SRAM BIST Test Finish
      * |        |          |0 = System CACHE RAM BIST is active.
      * |        |          |1 = System CACHE RAM BIST test finish.
-     * |[20]    |USBBEND   |USB SRAM BIST Test Finish
-     * |        |          |0 = USB SRAM BIST is active.
-     * |        |          |1 = USB SRAM BIST test finish.
      * @var SYS_T::REGLCTL
      * Offset: 0x100  Register Lock Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -11803,9 +11767,6 @@ typedef struct
 
 #define SYS_IPRST1_ACMP01RST_Pos         (22)                                              /*!< SYS_T::IPRST1: ACMP01RST Position      */
 #define SYS_IPRST1_ACMP01RST_Msk         (0x1ul << SYS_IPRST1_ACMP01RST_Pos)               /*!< SYS_T::IPRST1: ACMP01RST Mask          */
-
-#define SYS_IPRST1_USBDRST_Pos           (27)                                              /*!< SYS_T::IPRST1: USBDRST Position        */
-#define SYS_IPRST1_USBDRST_Msk           (0x1ul << SYS_IPRST1_USBDRST_Pos)                 /*!< SYS_T::IPRST1: USBDRST Mask            */
 
 #define SYS_IPRST1_ADCRST_Pos            (28)                                              /*!< SYS_T::IPRST1: ADCRST Position         */
 #define SYS_IPRST1_ADCRST_Msk            (0x1ul << SYS_IPRST1_ADCRST_Pos)                  /*!< SYS_T::IPRST1: ADCRST Mask             */
@@ -12215,26 +12176,17 @@ typedef struct
 #define SYS_SRAM_BISTCTL_CRBIST_Pos      (2)                                               /*!< SYS_T::SRAM_BISTCTL: CRBIST Position   */
 #define SYS_SRAM_BISTCTL_CRBIST_Msk      (0x1ul << SYS_SRAM_BISTCTL_CRBIST_Pos)            /*!< SYS_T::SRAM_BISTCTL: CRBIST Mask       */
 
-#define SYS_SRAM_BISTCTL_USBBIST_Pos     (4)                                               /*!< SYS_T::SRAM_BISTCTL: USBBIST Position  */
-#define SYS_SRAM_BISTCTL_USBBIST_Msk     (0x1ul << SYS_SRAM_BISTCTL_USBBIST_Pos)           /*!< SYS_T::SRAM_BISTCTL: USBBIST Mask      */
-
 #define SYS_SRAM_BISTSTS_SRBISTEF_Pos    (0)                                               /*!< SYS_T::SRAM_BISTSTS: SRBISTEF Position */
 #define SYS_SRAM_BISTSTS_SRBISTEF_Msk    (0x1ul << SYS_SRAM_BISTSTS_SRBISTEF_Pos)          /*!< SYS_T::SRAM_BISTSTS: SRBISTEF Mask     */
 
 #define SYS_SRAM_BISTSTS_CRBISTEF_Pos    (2)                                               /*!< SYS_T::SRAM_BISTSTS: CRBISTEF Position */
 #define SYS_SRAM_BISTSTS_CRBISTEF_Msk    (0x1ul << SYS_SRAM_BISTSTS_CRBISTEF_Pos)          /*!< SYS_T::SRAM_BISTSTS: CRBISTEF Mask     */
 
-#define SYS_SRAM_BISTSTS_USBBEF_Pos      (4)                                               /*!< SYS_T::SRAM_BISTSTS: USBBEF Position   */
-#define SYS_SRAM_BISTSTS_USBBEF_Msk      (0x1ul << SYS_SRAM_BISTSTS_USBBEF_Pos)            /*!< SYS_T::SRAM_BISTSTS: USBBEF Mask       */
-
 #define SYS_SRAM_BISTSTS_SRBEND_Pos      (16)                                              /*!< SYS_T::SRAM_BISTSTS: SRBEND Position   */
 #define SYS_SRAM_BISTSTS_SRBEND_Msk      (0x1ul << SYS_SRAM_BISTSTS_SRBEND_Pos)            /*!< SYS_T::SRAM_BISTSTS: SRBEND Mask       */
 
 #define SYS_SRAM_BISTSTS_CRBEND_Pos      (18)                                              /*!< SYS_T::SRAM_BISTSTS: CRBEND Position   */
 #define SYS_SRAM_BISTSTS_CRBEND_Msk      (0x1ul << SYS_SRAM_BISTSTS_CRBEND_Pos)            /*!< SYS_T::SRAM_BISTSTS: CRBEND Mask       */
-
-#define SYS_SRAM_BISTSTS_USBBEND_Pos     (20)                                              /*!< SYS_T::SRAM_BISTSTS: USBBEND Position  */
-#define SYS_SRAM_BISTSTS_USBBEND_Msk     (0x1ul << SYS_SRAM_BISTSTS_USBBEND_Pos)           /*!< SYS_T::SRAM_BISTSTS: USBBEND Mask      */
 
 #define SYS_TSOFFSET_VTEMP_Pos           (0)                                               /*!< SYS_T::TSOFFSET: VTEMP Position        */
 #define SYS_TSOFFSET_VTEMP_Msk           (0xffful << SYS_TSOFFSET_VTEMP_Pos)               /*!< SYS_T::TSOFFSET: VTEMP Mask            */
@@ -12327,7 +12279,7 @@ typedef struct
      * |        |          |IRQSRC[22].0 - USCI0_INT
      * |        |          |IRQSRC[22].1 - USCI1_INT
      * |        |          |IRQSRC[22].2 - USCI2_INT
-     * |        |          |IRQSRC[23].0 - USBD_INT
+     * |        |          |IRQSRC[23].0 - 0
      * |        |          |IRQSRC[23].1 - 0
      * |        |          |IRQSRC[23].2 - 0
      * |        |          |IRQSRC[24].0 - SMC0_INT

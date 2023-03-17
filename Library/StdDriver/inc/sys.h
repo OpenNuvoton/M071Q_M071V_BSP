@@ -55,7 +55,6 @@ extern "C"
 #define PWM0_RST    ((0x4<<24)|SYS_IPRST1_PWM0RST_Pos)      /*!< PWM0 reset is one of the SYS_ResetModule parameter */
 #define PWM1_RST    ((0x4<<24)|SYS_IPRST1_PWM1RST_Pos)      /*!< PWM1 reset is one of the SYS_ResetModule parameter */
 #define ACMP01_RST  ((0x4<<24)|SYS_IPRST1_ACMP01RST_Pos)    /*!< ACMP01 reset is one of the SYS_ResetModule parameter */
-#define USBD_RST    ((0x4<<24)|SYS_IPRST1_USBDRST_Pos)      /*!< USBD reset is one of the SYS_ResetModule parameter */
 #define ADC_RST     ((0x4<<24)|SYS_IPRST1_ADCRST_Pos)       /*!< ADC reset is one of the SYS_ResetModule parameter */
 
 #define SC0_RST     ((0x8<<24)|SYS_IPRST2_SC0RST_Pos)       /*!< SC0 reset is one of the SYS_ResetModule parameter */
