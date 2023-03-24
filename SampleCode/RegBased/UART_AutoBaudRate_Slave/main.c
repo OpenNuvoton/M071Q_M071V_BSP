@@ -222,7 +222,7 @@ void AutoBaudRate_RxTest()
     /* Enable auto baud rate detect function */
     UART1->ALTCTL |= UART_ALTCTL_ABRDEN_Msk;
 
-    printf("\nreceiving input pattern... ");
+    printf("\nreceiving input pattern... \n");
 
     /* Wait until auto baud rate detect finished or time-out */
     while((UART1->ALTCTL & UART_ALTCTL_ABRIF_Msk) == 0);
