@@ -88,7 +88,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(uint32_t u32BaudRate)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -97,7 +97,7 @@ void UART0_Init()
     SYS_ResetModule(UART0_RST);
 
     /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 9600);
+    UART_Open(UART0, u32BaudRate);
 }
 
 void UART1_Init()
@@ -117,6 +117,7 @@ void UART1_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -127,8 +128,8 @@ int32_t main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    /* Init UART0 for printf */
-    UART0_Init();
+    /* Init UART0 for print message and baudrate is 115200bps */
+    UART0_Init(115200);
 
     /* Init UART1 for test */
     UART1_Init();
@@ -136,6 +137,16 @@ int32_t main(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* SAMPLE CODE                                                                                             */
     /*---------------------------------------------------------------------------------------------------------*/
+
+    printf("This sample code UART print message baudrate is 9600bps.\n");
+
+    /* Check if all the debug messages are finished */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    UART_WAIT_TX_EMPTY(UART0)
+        if(--u32TimeOutCnt == 0) break;
+
+    /* Init UART0 for print message and baudrate is 9600bps */
+    UART0_Init(9600);
 
     printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
 
