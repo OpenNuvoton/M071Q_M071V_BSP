@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
+#define PLLCTL_SETTING      CLK_PLLCTL_72MHz_HXT
+#define PLL_CLOCK           72000000
 
 #define TEST_COUNT 16
 
@@ -114,6 +116,18 @@ void SYS_Init(void)
 
     /* Select HXT as the clock source of HCLK */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HXT;
+
+    /* Set PLL to Power-down mode */
+    CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
+
+    /* Configure PLL */
+    CLK->PLLCTL = PLLCTL_SETTING;
+
+    /* Waiting for clock ready */
+    while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk));
+
+    /* Select PLL as the system clock source */
+    CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_PLL;
 
     /* Select HXT as the clock source of UART */
     CLK->CLKSEL1 = (CLK->CLKSEL1 & (~CLK_CLKSEL1_UARTSEL_Msk)) | CLK_CLKSEL1_UARTSEL_HXT;

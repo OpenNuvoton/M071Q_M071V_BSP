@@ -241,7 +241,7 @@ void I2C1_Init(void)
     /* Open I2C1 and set clock to 100k */
     I2C_Open(I2C1, 100000);
 
-    /* Get I2C3 Bus Clock */
+    /* Get I2C1 Bus Clock */
     printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C1));
 }
 

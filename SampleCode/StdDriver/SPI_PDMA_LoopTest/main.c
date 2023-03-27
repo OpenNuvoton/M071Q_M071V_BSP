@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
+#define PLL_CLOCK           72000000
+
 #define SPI_MASTER_TX_DMA_CH 0
 #define SPI_MASTER_RX_DMA_CH 1
 #define SPI_SLAVE_TX_DMA_CH  2
@@ -90,6 +92,9 @@ void SYS_Init(void)
 
     /* Switch HCLK clock source to HXT and HCLK source divide 1 */
     CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HXT, CLK_CLKDIV0_HCLK(1));
+
+    /* Set core clock as PLL_CLOCK from PLL */
+    CLK_SetCoreClock(PLL_CLOCK);
 
     /* Select HXT as the clock source of UART0 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HXT, CLK_CLKDIV0_UART(1));
@@ -237,7 +242,7 @@ void SpiLoopTest_WithPDMA(void)
     /* Single request type. SPI only support PDMA single request type. */
     PDMA_SetBurstType(SPI_SLAVE_RX_DMA_CH, PDMA_REQ_SINGLE, 0);
     /* Disable table interrupt */
-    PDMA->DSCT[SPI_MASTER_RX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
+    PDMA->DSCT[SPI_SLAVE_RX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 
     /*=======================================================================
       SPI slave PDMA TX channel configuration:
@@ -263,11 +268,9 @@ void SpiLoopTest_WithPDMA(void)
 
 
     /* Enable SPI slave DMA function */
-    SPI_TRIGGER_RX_PDMA(SPI1);
-    SPI_TRIGGER_TX_PDMA(SPI1);
+    SPI_TRIGGER_TX_RX_PDMA(SPI1);
     /* Enable SPI master DMA function */
-    SPI_TRIGGER_TX_PDMA(SPI0);
-    SPI_TRIGGER_RX_PDMA(SPI0);
+    SPI_TRIGGER_TX_RX_PDMA(SPI0);
 
 
 
@@ -291,8 +294,7 @@ void SpiLoopTest_WithPDMA(void)
                     /* Clear the PDMA transfer done flags */
                     PDMA_CLR_TD_FLAG((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH) | (1 << SPI_SLAVE_TX_DMA_CH) | (1 << SPI_SLAVE_RX_DMA_CH));
                     /* Disable SPI master's PDMA transfer function */
-                    SPI_DISABLE_TX_PDMA(SPI0);
-                    SPI_DISABLE_RX_PDMA(SPI0);
+                    SPI_DISABLE_TX_RX_PDMA(SPI0);
                     /* Check the transfer data */
                     for(u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
                     {
@@ -343,8 +345,7 @@ void SpiLoopTest_WithPDMA(void)
                     PDMA_SetTransferMode(SPI_MASTER_RX_DMA_CH, PDMA_SPI0_RX, FALSE, 0);
 
                     /* Enable master's DMA transfer function */
-                    SPI_TRIGGER_TX_PDMA(SPI0);
-                    SPI_TRIGGER_RX_PDMA(SPI0);
+                    SPI_TRIGGER_TX_RX_PDMA(SPI0);
                     break;
                 }
             }

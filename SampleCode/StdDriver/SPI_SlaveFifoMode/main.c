@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
+#define PLL_CLOCK           72000000
 
 #define TEST_COUNT 16
 
@@ -116,6 +117,9 @@ void SYS_Init(void)
 
     /* Switch HCLK clock source to HXT and set HCLK divider to 1 */
     CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HXT, CLK_CLKDIV0_HCLK(1));
+
+    /* Set core clock as PLL_CLOCK from PLL */
+    CLK_SetCoreClock(PLL_CLOCK);
 
     /* Select HXT as the clock source of UART0 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HXT, CLK_CLKDIV0_UART(1));
