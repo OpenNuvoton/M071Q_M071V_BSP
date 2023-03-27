@@ -1,9 +1,9 @@
 ;/**************************************************************************//**
-; * @file     startup_M051Series.s
+; * @file     startup_M071Q_M071V.s
 ; * @version  V2.00
 ; * $Revision: 2 $
 ; * $Date: 16/06/28 1:34p $ 
-; * @brief    M051 Series Startup Source File
+; * @brief    M071Q_M071V Series Startup Source File
 ; *
 ; * @note
 ; * SPDX-License-Identifier: Apache-2.0
@@ -123,8 +123,14 @@ NMI_Handler     PROC
                 ENDP
 HardFault_Handler\
                 PROC
+                IMPORT  ProcessHardFault
                 EXPORT  HardFault_Handler         [WEAK]
-                B       .
+                MOV     R0, LR                 
+                MRS     R1, MSP                
+                MRS     R2, PSP                
+                LDR     R3, =ProcessHardFault 
+                BLX     R3                     
+                BX      R0                     
                 ENDP
 SVC_Handler     PROC
                 EXPORT  SVC_Handler               [WEAK]

@@ -148,3 +148,10 @@ void AssertError(uint8_t * file, uint32_t line)
     while(1) ;
 }
 #endif
+
+#if defined( __ICCARM__ )
+__WEAK
+#else
+__attribute__((weak))
+#endif
+uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp) {return 0;}

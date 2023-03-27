@@ -191,7 +191,7 @@ __WEAK
 #else
 __attribute__((weak))
 #endif
-uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
+uint32_t _ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 {
     uint32_t *sp;
     /* It is casued by hardfault. Just process the hard fault */

@@ -1,9 +1,9 @@
 ;/**************************************************************************//**
-; * @file     startup_M051Series.s
+; * @file     startup_M071Q_M071V.s
 ; * @version  V2.00
 ; * $Revision: 4 $
 ; * $Date: 16/06/28 2:13p $ 
-; * @brief    M051 Series Startup Source File for IAR Platform
+; * @brief    M071Q_M071V Series Startup Source File for IAR Platform
 ; *
 ; * @note
 ; * SPDX-License-Identifier: Apache-2.0
@@ -23,6 +23,7 @@
     SECTION .intvec:CODE:NOROOT(2);; 4 bytes alignment
 
     EXTERN  SystemInit  
+    EXTERN  ProcessHardFault
     EXTERN  __iar_program_start
     PUBLIC  __vector_table
 
@@ -95,6 +96,15 @@ Reset_Handler
         BX       R0
 
     PUBWEAK HardFault_Handler
+HardFault_Handler\
+
+        MOV     R0, LR
+        MRS     R1, MSP
+        MRS     R2, PSP
+        LDR     R3, =ProcessHardFault
+        BLX     R3
+        BX      R0
+
     PUBWEAK NMI_Handler       
     PUBWEAK SVC_Handler       
     PUBWEAK PendSV_Handler    
@@ -128,7 +138,7 @@ Reset_Handler
     
     SECTION .text:CODE:REORDER:NOROOT(2)
     
-HardFault_Handler 
+;HardFault_Handler 
 NMI_Handler       
 SVC_Handler       
 PendSV_Handler    
