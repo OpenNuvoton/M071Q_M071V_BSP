@@ -67,7 +67,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(SC0_MODULE);
 
     /* Select SC0 module clock source from PLL */
-    CLK_SetModuleClock(SC0_MODULE, CLK_CLKSEL3_SC0SEL_PLL, CLK_CLKDIV1_SC0(1));
+    CLK_SetModuleClock(SC0_MODULE, CLK_CLKSEL3_SC0SEL_PLL, CLK_CLKDIV1_SC0(2));
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

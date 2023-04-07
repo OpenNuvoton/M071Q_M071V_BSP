@@ -81,7 +81,7 @@ void SYS_Init(void)
     CLK->CLKSEL3 &= ~CLK_CLKSEL3_SC0SEL_Msk;
     CLK->CLKSEL3 |= CLK_CLKSEL3_SC0SEL_PLL;
     CLK->CLKDIV1 &= ~CLK_CLKDIV1_SC0DIV_Msk;
-    CLK->CLKDIV1 |= CLK_CLKDIV1_SC0(1);
+    CLK->CLKDIV1 |= CLK_CLKDIV1_SC0(2);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
