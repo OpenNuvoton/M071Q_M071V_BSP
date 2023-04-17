@@ -34,8 +34,9 @@ volatile int32_t g_bWait         = TRUE;
 int32_t main(void);
 void USCI_UART_TEST_HANDLE(void);
 void USCI_UART_FunctionTest(void);
+void ProcessHardFault(void);
 
-
+void ProcessHardFault(void){}
 void SYS_Init(void)
 {
 

@@ -11,7 +11,8 @@
 
 #include <stdio.h>
 #include "M071Q_M071V.h"
-# if defined (__GNUC__)
+
+#if (defined (__GNUC__) && (!(defined(__ARMCC_VERSION))))
 extern void initialise_monitor_handles(void);
 #endif
 
@@ -22,7 +23,8 @@ extern void initialise_monitor_handles(void);
 int32_t main()
 {
     int8_t item;
-# if defined (__GNUC__)
+
+#if (defined (__GNUC__) && (!(defined(__ARMCC_VERSION))))
     initialise_monitor_handles();
 #endif
     /*
