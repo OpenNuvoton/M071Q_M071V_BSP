@@ -42,7 +42,7 @@ void Configure_EBI_16BIT_Pins(void)
                      SYS_GPC_MFPL_PC4MFP_EBI_AD12 | SYS_GPC_MFPL_PC5MFP_EBI_AD13 |
                      SYS_GPC_MFPL_PC6MFP_EBI_AD14 | SYS_GPC_MFPL_PC7MFP_EBI_AD15;
 
-    /* EBI AD16~19 pins on PD.12~15*/
+    /* EBI ADR16~19 pins on PD.12~15*/
     SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD12MFP_Msk | SYS_GPD_MFPH_PD13MFP_Msk |
                        SYS_GPD_MFPH_PD14MFP_Msk | SYS_GPD_MFPH_PD15MFP_Msk);
     SYS->GPD_MFPH |= SYS_GPD_MFPH_PD12MFP_EBI_ADR16 | SYS_GPD_MFPH_PD13MFP_EBI_ADR17 |
@@ -103,11 +103,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Set PD multi-function pins for UART0 RXD and TXD */
+    /* Set PD multi-function pins for UART0 TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
-    SYS->GPD_MFPH &= ~(SYS_GPD_MFPH_PD9MFP_Msk);
-    SYS->GPD_MFPH |= (SYS_GPD_MFPH_PD9MFP_UART0_RXD);
 }
 
 void UART0_Init(void)
@@ -149,7 +147,7 @@ int main(void)
     printf("* EBI pins settings:                                               *\n");
     printf("*   - AD0 ~ AD7 on PA.0 ~ PA.7                                     *\n");
     printf("*   - AD8 ~ AD15 on PC.0 ~ PC.7                                    *\n");
-    printf("*   - AD16 ~ AD19 on PD.12 ~ PD.15                                 *\n");
+    printf("*   - ADR16 ~ ADR19 on PD.12 ~ PD.15                               *\n");
     printf("*   - nWR on PD.2                                                  *\n");
     printf("*   - nRD on PD.7                                                  *\n");
     printf("*   - nWRL on PB.0                                                 *\n");
@@ -224,7 +222,7 @@ void PDMA_IRQHandler(void)
 
 int32_t AccessEBIWithPDMA(void)
 {
-    uint32_t i;
+    volatile uint32_t i;
     uint32_t u32Result0 = 0x5A5A, u32Result1 = 0x5A5A;
     uint32_t u32TimeOutCnt = 0;
 

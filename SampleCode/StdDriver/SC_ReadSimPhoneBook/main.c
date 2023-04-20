@@ -49,6 +49,9 @@ void get_pin(void)
     char c = 0;
 
     printf("Please input PIN number:");
+#if defined(__GNUC__)
+    printf("\n");
+#endif    
     while(i < 8)
     {
         c = getchar();
@@ -71,6 +74,9 @@ void get_pin(void)
         else if(c == 0x1B)    //ESC
         {
             printf("\nPlease input PIN number:");
+#if defined(__GNUC__)
+            printf("\n");
+#endif    
             i = 0;  // retry
         }
         else
