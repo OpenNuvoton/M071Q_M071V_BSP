@@ -1,5 +1,5 @@
 /**************************************************************************//**
- * @file     Smpl_DrvFMC.c
+ * @file     main.c
  * @version  V2.00
  * $Revision: 2 $
  * $Date: 16/10/25 4:26p $
@@ -53,7 +53,7 @@ void SYS_Init(void)
     CLK->CLKSEL0 |= CLK_CLKSEL0_HCLKSEL_PLL;
 
     /* Update System Core Clock */
-    /* User can use SystemCoreClockUpdate() to calculate PllClock, SystemCoreClock and CycylesPerUs automatically. */
+    /* User can use SystemCoreClockUpdate() to calculate PllClock, SystemCoreClock and CyclesPerUs automatically. */
     //SystemCoreClockUpdate();
     PllClock        = PLL_CLOCK;            // PLL
     SystemCoreClock = PLL_CLOCK / 1;        // HCLK
@@ -121,10 +121,10 @@ int32_t main(void)
         To use this sample code, please:
         1. Build all targets and download to device individually. The targets are:
             FMC_MultiBoot, RO=0x0
-            FMC_Boot0, RO=0x1000
-            FMC_Boot1, RO=0x2000
-            FMC_Boot2, RO=0x3000
-            FMC_Boot3, RO=0x4000
+            FMC_Boot0, RO=0x4000
+            FMC_Boot1, RO=0x8000
+            FMC_Boot2, RO=0xC000
+            FMC_Boot3, RO=0x10000
         2. Reset MCU to execute FMC_MultiBoot.
 
     */
@@ -172,26 +172,26 @@ int32_t main(void)
     }
 
     printf("Select one boot image: \n");
-    printf("[0] Boot 0, base = 0x1000\n");
-    printf("[1] Boot 1, base = 0x2000\n");
-    printf("[2] Boot 2, base = 0x3000\n");
-    printf("[3] Boot 3, base = 0x4000\n");
+    printf("[0] Boot 0, base = 0x4000\n");
+    printf("[1] Boot 1, base = 0x8000\n");
+    printf("[2] Boot 2, base = 0xC000\n");
+    printf("[3] Boot 3, base = 0x10000\n");
     printf("[Others] Boot, base = 0x0\n");
 
     ch = getchar();
     switch(ch)
     {
         case '0':
-            FMC_SetVectorPageAddr(0x1000);
+            FMC_SetVectorPageAddr(0x4000);
             break;
         case '1':
-            FMC_SetVectorPageAddr(0x2000);
+            FMC_SetVectorPageAddr(0x8000);
             break;
         case '2':
-            FMC_SetVectorPageAddr(0x3000);
+            FMC_SetVectorPageAddr(0xC000);
             break;
         case '3':
-            FMC_SetVectorPageAddr(0x4000);
+            FMC_SetVectorPageAddr(0x10000);
             break;
         default:
             FMC_SetVectorPageAddr(0x0);

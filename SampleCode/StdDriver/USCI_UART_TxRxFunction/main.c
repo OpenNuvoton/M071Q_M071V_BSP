@@ -171,6 +171,9 @@ void USCI_UART_TEST_HANDLE()
         }
 
         printf("\nTransmission Test:");
+
+        /* Forces a write of all user-space buffered data for the given output */
+        fflush(stdout);
     }
 
     if(u32IntSts & UUART_PROTSTS_TXENDIF_Msk)

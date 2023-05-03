@@ -1,5 +1,5 @@
 /**************************************************************************//**
- * @file     retarget.c
+ * @file     myretarget.c
  * @version  V3.00
  * @brief    Debug Port and Semihost Setting Source File
  *
@@ -324,7 +324,7 @@ void SendChar_ToUART(int ch)
 
         if((DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk) == 0)
         {
-            DEBUG_PORT->DATA = u8Buf[i32Tail];
+            DEBUG_PORT->TXDAT = u8Buf[i32Tail];
             i32Tail = i32Tmp;
         }
         else
@@ -415,7 +415,7 @@ char GetChar(void)
     {
         if((DEBUG_PORT->BUFSTS & UUART_BUFSTS_RXEMPTY_Msk) == 0)
         {
-            return (DEBUG_PORT->DAT);
+            return (DEBUG_PORT->RXDAT);
         }
     }
 # endif
@@ -428,7 +428,7 @@ char GetChar(void)
     {
         if((DEBUG_PORT->BUFSTS & UUART_BUFSTS_RXEMPTY_Msk) == 0)
         {
-            return ((char)DEBUG_PORT->TXDAT);
+            return ((char)DEBUG_PORT->RXDAT);
         }
     }
 
@@ -518,12 +518,12 @@ int _write (int fd, char *ptr, int len)
 
     while(i--) {
         if(*ptr == '\n') {
-            while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-            DEBUG_PORT->DAT = '\r';
+            while(DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
+            DEBUG_PORT->TXDAT = '\r';
         }
 
-        while(DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-        DEBUG_PORT->DAT = *ptr++;
+        while(DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
+        DEBUG_PORT->TXDAT = *ptr++;
 
     }
     return len;
@@ -532,8 +532,8 @@ int _write (int fd, char *ptr, int len)
 int _read (int fd, char *ptr, int len)
 {
 
-    while((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) != 0);
-    *ptr = DEBUG_PORT->DAT;
+    while((DEBUG_PORT->BUFSTS & UUART_BUFSTS_RXEMPTY_Msk) != 0);
+    *ptr = DEBUG_PORT->RXDAT;
     return 1;
 
 
