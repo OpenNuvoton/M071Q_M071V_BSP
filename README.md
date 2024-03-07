@@ -8,7 +8,7 @@ This BSP folder
 - CMSIS.html<br>
 	Introduction of CMSIS version 4.5.0. CMSIS components included CMSIS-CORE, CMSIS-Driver, CMSIS-DSP, etc.
 
-- NuMicro M071Q M071V Series CMSIS BSP Revision History.pdf<br>
+- Revision History.pdf<br>
 	The revision history of M071Q/M071V Series BSP.
 
 - NuMicro M071Q M071V Series Driver Reference Guide.chm<br>
@@ -57,4 +57,3 @@ This BSP folder
 Copyright in some of the content available in this BSP belongs to third parties.
 Third parties license is specified in a file header or license file.
 M071Q/M071V BSP files are provided under the Apache-2.0 license.
-
