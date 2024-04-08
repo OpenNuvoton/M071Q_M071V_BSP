@@ -1,22 +1,25 @@
 /**************************************************************************//**
  * @file     main.c
- * @version  V3.0
- * $Revision: 3 $
- * $Date: 17/05/04 1:53p $
+ * @version  V3.00
  * @brief    Configure SPI0 as Master mode and demonstrate how to communicate
  *           with an off-chip SPI Slave device with FIFO mode. This sample
  *           code needs to work with SPI_SlaveFifoMode sample code.
  *
- * @note
- * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
- *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "M071Q_M071V.h"
 
-#define PLL_CLOCK           72000000
+// *** <<< Use Configuration Wizard in Context Menu >>> ***
+// <o> GPIO Slew Rate Control
+// <0=> Basic <1=> Higher
+#define SlewRateMode    0
+// *** <<< end of configuration section >>> ***
 
-#define TEST_COUNT 16
+#define PLL_CLOCK       72000000
+
+#define TEST_COUNT      16
 
 uint32_t g_au32SourceData[TEST_COUNT];
 uint32_t g_au32DestinationData[TEST_COUNT];
@@ -75,7 +78,7 @@ int main(void)
     printf("\n");
 
     /* Set TX FIFO threshold, enable TX FIFO threshold interrupt and RX FIFO time-out interrupt */
-    SPI_SetFIFO(SPI0, 4, 4);
+    SPI_SetFIFO(SPI0, 2, 2);
     SPI_EnableInt(SPI0, SPI_FIFO_TXTH_INT_MASK | SPI_FIFO_RXTO_INT_MASK);
 
     g_u32TxDataCount = 0;
@@ -139,6 +142,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
+
     /* Set PD multi-function pins for UART0 RXD and TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
@@ -147,7 +151,15 @@ void SYS_Init(void)
 
     /* Setup SPI0 multi-function pins */
     SYS->GPB_MFPL &= ~(SYS_GPB_MFPL_PB4MFP_Msk | SYS_GPB_MFPL_PB5MFP_Msk | SYS_GPB_MFPL_PB6MFP_Msk | SYS_GPB_MFPL_PB7MFP_Msk);
-    SYS->GPB_MFPL |= SYS_GPB_MFPL_PB4MFP_SPI0_SS | SYS_GPB_MFPL_PB5MFP_SPI0_MOSI | SYS_GPB_MFPL_PB6MFP_SPI0_MISO | SYS_GPB_MFPL_PB7MFP_SPI0_CLK;
+    SYS->GPB_MFPL |= (SYS_GPB_MFPL_PB4MFP_SPI0_SS | SYS_GPB_MFPL_PB5MFP_SPI0_MOSI | SYS_GPB_MFPL_PB6MFP_SPI0_MISO | SYS_GPB_MFPL_PB7MFP_SPI0_CLK);
+
+#if (SlewRateMode == 0)
+    /* Enable SPI0 I/O basic slew rate */
+    PB->SLEWCTL &= ~(GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#elif (SlewRateMode == 1)
+    /* Enable SPI0 I/O higher slew rate */
+    PB->SLEWCTL |= (GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#endif
 }
 
 void SPI_Init(void)
@@ -184,7 +196,7 @@ void SPI0_IRQHandler(void)
     if(SPI_GetIntFlag(SPI0, SPI_FIFO_RXTO_INT_MASK))
     {
         /* If RX FIFO is not empty, read RX FIFO. */
-        while((SPI0->STATUS & SPI_STATUS_RXEMPTY_Msk) == 0)
+        while(SPI_GET_RX_FIFO_EMPTY_FLAG(SPI0) == 0)
             g_au32DestinationData[g_u32RxDataCount++] = SPI_READ_RX(SPI0);
     }
 }

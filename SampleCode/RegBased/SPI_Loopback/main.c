@@ -1,10 +1,9 @@
-/******************************************************************************
+/**************************************************************************//**
  * @file     main.c
  * @version  V3.00
  * @brief    Demonstrate one SPI Master self-loopback transfer and two SPI 4-wire loopback transfer.
  *           SPI1 will be configured as Master mode and SPI0 will be configured as Slave mode.
  *
- * @note
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
@@ -12,9 +11,12 @@
 #include "M071Q_M071V.h"
 
 // *** <<< Use Configuration Wizard in Context Menu >>> ***
-//  <c> Two SPI port loopback transfer
-// #define TwoPortLoopback
-//  </c>
+// <c> Two SPI port loopback transfer
+//#define TwoPortLoopback
+// </c>
+// <o> GPIO Slew Rate Control
+// <0=> Basic <1=> Higher
+#define SlewRateMode        0
 // *** <<< end of configuration section >>> ***
 
 #define PLLCTL_SETTING      CLK_PLLCTL_72MHz_HXT
@@ -214,6 +216,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
+
     /* Enable external 12MHz XTAL */
     CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk;
 
@@ -254,6 +257,7 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
+
     /* Set PD multi-function pins for UART0 RXD and TXD */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD1MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD1MFP_UART0_TXD);
@@ -264,11 +268,27 @@ void SYS_Init(void)
     /* Setup SPI0 multi-function pins */
     SYS->GPB_MFPL &= ~(SYS_GPB_MFPL_PB4MFP_Msk | SYS_GPB_MFPL_PB5MFP_Msk | SYS_GPB_MFPL_PB6MFP_Msk | SYS_GPB_MFPL_PB7MFP_Msk);
     SYS->GPB_MFPL |= (SYS_GPB_MFPL_PB4MFP_SPI0_SS | SYS_GPB_MFPL_PB5MFP_SPI0_MOSI | SYS_GPB_MFPL_PB6MFP_SPI0_MISO | SYS_GPB_MFPL_PB7MFP_SPI0_CLK);
+
+#if (SlewRateMode == 0)
+    /* Enable SPI0 I/O basic slew rate */
+    PB->SLEWCTL &= ~(GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#elif (SlewRateMode == 1)
+    /* Enable SPI0 I/O higher slew rate */
+    PB->SLEWCTL |= (GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#endif
 #endif
 
     /* Setup SPI1 multi-function pins */
     SYS->GPA_MFPL &= ~(SYS_GPA_MFPL_PA4MFP_Msk | SYS_GPA_MFPL_PA5MFP_Msk | SYS_GPA_MFPL_PA6MFP_Msk | SYS_GPA_MFPL_PA7MFP_Msk);
     SYS->GPA_MFPL |= (SYS_GPA_MFPL_PA4MFP_SPI1_SS | SYS_GPA_MFPL_PA5MFP_SPI1_MOSI | SYS_GPA_MFPL_PA6MFP_SPI1_MISO | SYS_GPA_MFPL_PA7MFP_SPI1_CLK);
+
+#if (SlewRateMode == 0)
+    /* Enable SPI1 I/O basic slew rate */
+    PA->SLEWCTL &= ~(GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#elif (SlewRateMode == 1)
+    /* Enable SPI1 I/O higher slew rate */
+    PA->SLEWCTL |= (GPIO_SLEWCTL_HSREN4_Msk | GPIO_SLEWCTL_HSREN5_Msk | GPIO_SLEWCTL_HSREN6_Msk | GPIO_SLEWCTL_HSREN7_Msk);
+#endif
 }
 
 void UART_Init(void)
