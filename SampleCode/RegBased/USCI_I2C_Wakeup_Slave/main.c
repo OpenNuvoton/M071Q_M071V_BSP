@@ -257,12 +257,12 @@ void SYS_Init(void)
     /* Wait for HIRC clock ready */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
 
+    CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk;
+    while(!(CLK->STATUS & CLK_STATUS_HXTSTB_Msk));
+
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HXT;
     CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_HCLKDIV_Msk)) | CLK_CLKDIV0_HCLK(1);
-
-    CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk;
-    while(!(CLK->STATUS & CLK_STATUS_HXTSTB_Msk));
 
     /* Update System Core Clock */
     SystemCoreClockUpdate();
@@ -378,6 +378,7 @@ int main()
 
     printf("[T] I/O Toggle Wake-up Mode\n");
     printf("[A] Address Match Wake-up Mode\n");
+
     printf("Select: ");
     ch =  getchar();
 
