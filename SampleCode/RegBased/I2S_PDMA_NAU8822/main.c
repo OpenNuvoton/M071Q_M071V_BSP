@@ -118,6 +118,8 @@ void NAU8822_Setup()
 
 void SYS_Init(void)
 {
+	uint32_t u32TimeOutCnt;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -126,7 +128,9 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HXTEN_Msk;
 
     /* Waiting for 12MHz clock ready */
-    while(!(CLK->STATUS & CLK_STATUS_HXTSTB_Msk));
+    u32TimeOutCnt = __HIRC;
+    while(!(CLK->STATUS & CLK_STATUS_HXTSTB_Msk))
+		if(--u32TimeOutCnt == 0) break;
 
     /* Switch HCLK clock source to HXT */
     CLK->CLKSEL0 = CLK_CLKSEL0_HCLKSEL_HXT;
@@ -138,7 +142,10 @@ void SYS_Init(void)
     CLK->PLLCTL = CLK_PLLCTL_72MHz_HXT;
 
     /* Waiting for clock ready */
-    while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk));
+    u32TimeOutCnt = __HIRC;
+    while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
+		if(--u32TimeOutCnt == 0) break;
+
 
     /* Switch HCLK clock source to PLL */
     CLK->CLKSEL0 = CLK_CLKSEL0_HCLKSEL_PLL;
@@ -223,7 +230,7 @@ void PDMA_Init(void)
     /* Configure PDMA transfer mode */
     PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~(0x3Ful << 8)) | (PDMA_SPI0_TX << 8);
     PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~(0x3Ful << 16)) | (PDMA_SPI0_RX << 16);
-    
+
     PDMA->DSCT[1].CTL = (PDMA->DSCT[1].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_SCATTER;
     PDMA->DSCT[1].FIRST = (uint32_t)&g_asDescTable_TX[0] - (PDMA->SCATBA);
 
