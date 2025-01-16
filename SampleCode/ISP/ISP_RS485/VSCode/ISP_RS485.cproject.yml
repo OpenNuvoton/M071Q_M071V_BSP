@@ -14,11 +14,12 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,"$OutDir()$/$Project$.map"
-
   setups:
     - output:
         type: ["elf", "bin"]
   linker:
+    - for-compiler: AC6
+      script: ../../../../Library/Device/Nuvoton/M071Q_M071V/Source/ARM/LDROM.sct
     - for-compiler: GCC
       script: ../../../../Library/Device/Nuvoton/M071Q_M071V/Source/GCC/gcc_arm.ld
   add-path:
